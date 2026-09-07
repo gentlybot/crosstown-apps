@@ -15,7 +15,7 @@ import { clearSession, useSession } from "@/lib/session";
 
 type NavItem = { label: string; to: LinkProps["to"] };
 
-type Props = { context: string; home: LinkProps["to"]; signInPath: "/login" | "/admin/login"; nav: NavItem[] };
+type Props = { context: string; home: LinkProps["to"]; signInPath: "/merchant/login" | "/admin/login"; nav: NavItem[] };
 
 export function PortalHeader({ context, home, signInPath, nav }: Props) {
   const session = useSession();

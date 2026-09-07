@@ -50,12 +50,12 @@ function BatchesPage() {
                 <Link to="/merchant/batches/new">Upload your first batch</Link>
               </Button>
               <Button asChild variant="outline">
-                <a href="/sample-orders-clean.csv" download>
+                <a href={`${import.meta.env.BASE_URL}sample-orders-clean.csv`} download>
                   Sample CSV, all clean
                 </a>
               </Button>
               <Button asChild variant="outline">
-                <a href="/sample-orders-problems.csv" download>
+                <a href={`${import.meta.env.BASE_URL}sample-orders-problems.csv`} download>
                   Sample CSV, 3 problems
                 </a>
               </Button>

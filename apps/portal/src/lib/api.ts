@@ -25,7 +25,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
   if (res.status === 401 && session) {
     clearSession();
-    window.location.assign(window.location.pathname.startsWith("/admin") ? "/admin/login" : "/login");
+    window.location.assign(window.location.pathname.startsWith("/admin") ? "/admin/login" : "/merchant/login");
   }
 
   if (res.status === 204) return undefined as T;

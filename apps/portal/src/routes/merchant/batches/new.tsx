@@ -141,12 +141,12 @@ function NewBatchPage() {
             <p className="text-xs font-medium text-muted-foreground">Sample files</p>
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" size="sm" asChild>
-                <a href="/sample-orders-clean.csv" download>
+                <a href={`${import.meta.env.BASE_URL}sample-orders-clean.csv`} download>
                   10 orders, all clean
                 </a>
               </Button>
               <Button variant="outline" size="sm" asChild>
-                <a href="/sample-orders-problems.csv" download>
+                <a href={`${import.meta.env.BASE_URL}sample-orders-problems.csv`} download>
                   10 orders, 3 with problems
                 </a>
               </Button>

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/admin_/login")({
       footer={
         <p className="mt-6 text-center text-xs text-muted-foreground">
           Running a shop?{" "}
-          <Link to="/login" className="underline-offset-4 hover:text-foreground hover:underline">
+          <Link to="/merchant/login" className="underline-offset-4 hover:text-foreground hover:underline">
             Merchant sign in
           </Link>
         </p>

@@ -11,11 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as MerchantRouteImport } from './routes/merchant'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as MerchantIndexRouteImport } from './routes/merchant/index'
+import { Route as MerchantLoginRouteImport } from './routes/merchant_.login'
 import { Route as AdminBatchesIndexRouteImport } from './routes/admin/batches/index'
 import { Route as AdminBatchesBatchIdRouteImport } from './routes/admin/batches/$batchId'
 import { Route as AdminRoutesIndexRouteImport } from './routes/admin/routes/index'
@@ -31,11 +31,6 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerchantRoute = MerchantRouteImport.update({
@@ -57,6 +52,11 @@ const MerchantIndexRoute = MerchantIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MerchantRoute,
+} as any)
+const MerchantLoginRoute = MerchantLoginRouteImport.update({
+  id: '/merchant_/login',
+  path: '/merchant/login',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminBatchesIndexRoute = AdminBatchesIndexRouteImport.update({
   id: '/batches/',
@@ -92,9 +92,9 @@ const MerchantBatchesNewRoute = MerchantBatchesNewRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/login': typeof LoginRoute
   '/merchant': typeof MerchantRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/merchant/login': typeof MerchantLoginRoute
   '/admin/': typeof AdminIndexRoute
   '/merchant/': typeof MerchantIndexRoute
   '/admin/batches/$batchId': typeof AdminBatchesBatchIdRoute
@@ -106,8 +106,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
   '/admin/login': typeof AdminLoginRoute
+  '/merchant/login': typeof MerchantLoginRoute
   '/admin': typeof AdminIndexRoute
   '/merchant': typeof MerchantIndexRoute
   '/admin/batches/$batchId': typeof AdminBatchesBatchIdRoute
@@ -121,9 +121,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/login': typeof LoginRoute
   '/merchant': typeof MerchantRouteWithChildren
   '/admin_/login': typeof AdminLoginRoute
+  '/merchant_/login': typeof MerchantLoginRoute
   '/admin/': typeof AdminIndexRoute
   '/merchant/': typeof MerchantIndexRoute
   '/admin/batches/$batchId': typeof AdminBatchesBatchIdRoute
@@ -138,9 +138,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/login'
     | '/merchant'
     | '/admin/login'
+    | '/merchant/login'
     | '/admin/'
     | '/merchant/'
     | '/admin/batches/$batchId'
@@ -152,8 +152,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/login'
     | '/admin/login'
+    | '/merchant/login'
     | '/admin'
     | '/merchant'
     | '/admin/batches/$batchId'
@@ -166,9 +166,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
-    | '/login'
     | '/merchant'
     | '/admin_/login'
+    | '/merchant_/login'
     | '/admin/'
     | '/merchant/'
     | '/admin/batches/$batchId'
@@ -182,9 +182,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  LoginRoute: typeof LoginRoute
   MerchantRoute: typeof MerchantRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
+  MerchantLoginRoute: typeof MerchantLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -201,13 +201,6 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merchant': {
@@ -237,6 +230,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/merchant/'
       preLoaderRoute: typeof MerchantIndexRouteImport
       parentRoute: typeof MerchantRoute
+    }
+    '/merchant_/login': {
+      id: '/merchant_/login'
+      path: '/merchant/login'
+      fullPath: '/merchant/login'
+      preLoaderRoute: typeof MerchantLoginRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/batches/': {
       id: '/admin/batches/'
@@ -320,9 +320,9 @@ const MerchantRouteWithChildren = MerchantRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  LoginRoute: LoginRoute,
   MerchantRoute: MerchantRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
+  MerchantLoginRoute: MerchantLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

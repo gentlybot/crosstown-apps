@@ -2,7 +2,9 @@ import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { LoginForm } from "@/components/login-form";
 import { getSession, homeFor } from "@/lib/session";
 
-export const Route = createFileRoute("/login")({
+// The trailing underscore keeps this route out of the /merchant layout, so the
+// sign-in page remains available before authentication.
+export const Route = createFileRoute("/merchant_/login")({
   beforeLoad: () => {
     const session = getSession();
     if (session) throw redirect({ to: homeFor(session) });
