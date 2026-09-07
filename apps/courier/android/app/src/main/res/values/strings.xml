@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Handoff Courier</string>
+    <string name="title_activity_main">Handoff Courier</string>
+    <string name="package_name">com.handoff.courier</string>
+    <string name="custom_url_scheme">com.handoff.courier</string>
+</resources>

@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { BatchDetail } from "@/components/batch-detail";
+import { MerchantRoutingCard } from "@/components/merchant-routing-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { batchQuery } from "@/lib/queries";
@@ -25,6 +26,7 @@ function BatchPage() {
     <BatchDetail
       batch={batch}
       pickup={pickup}
+      actions={<MerchantRoutingCard date={batch.delivery_date} batchId={batchId} />}
       back={{ to: "/merchant/batches", label: "Batches" }}
       problemHint="Correct the rows in your spreadsheet and upload the file again, or send the fixes to Handoff before your cutoff."
       retry={

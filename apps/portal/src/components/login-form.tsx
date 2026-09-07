@@ -32,6 +32,10 @@ export function LoginForm({ title, description, audience, demo, footer }: Props)
     setError(null);
     try {
       const session: Session = await api.signIn(emailToUse, passwordToUse);
+      if (session.user.role === "courier") {
+        setError("Couriers use the Handoff courier app, not this site.");
+        return;
+      }
       if (audience === "staff" && session.user.role !== "admin") {
         setError("This sign-in is for Handoff staff. Merchants sign in at the main page.");
         return;

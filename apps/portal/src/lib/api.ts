@@ -81,11 +81,14 @@ export type Order = {
   stop_position: number | null;
 };
 
+export type RouteStatus = "planned" | "offered" | "assigned" | "in_progress" | "completed" | "cancelled";
+export type CourierBrief = { id: number; name: string; vehicle_type: string } | null;
+
 export type RouteSummary = {
   id: number;
   route_number: number;
   display_name: string;
-  status: "planned" | "cancelled";
+  status: RouteStatus;
   engine: string;
   delivery_date: string;
   stop_count: number;
@@ -94,6 +97,22 @@ export type RouteSummary = {
   start_at: string;
   start_lat: number;
   start_lng: number;
+  pay_cents: number;
+  courier: CourierBrief;
+  offered_at: string | null;
+  assigned_at: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  delivered_count: number;
+  failed_count: number;
+};
+
+export type RouteOffer = {
+  id: number;
+  status: "offered" | "accepted" | "declined" | "expired" | "withdrawn";
+  courier: CourierBrief;
+  expires_at: string;
+  responded_at: string | null;
 };
 
 export type RouteStop = {
@@ -108,6 +127,11 @@ export type RouteStop = {
   lng: number;
   leg_km: number;
   eta: string;
+  status: "pending" | "delivered" | "failed";
+  completed_at: string | null;
+  failure_reason: string | null;
+  note: string | null;
+  has_photo: boolean;
 };
 
 export type BatchDetail = Batch & { orders: Order[]; routes: RouteSummary[] };
@@ -123,7 +147,7 @@ export type MerchantBrief = {
 };
 export type AdminBatch = Batch & { merchant: MerchantBrief };
 export type AdminBatchDetail = BatchDetail & { merchant: MerchantBrief };
-export type RouteDetail = RouteSummary & { merchant: MerchantBrief; stops: RouteStop[] };
+export type RouteDetail = RouteSummary & { merchant: MerchantBrief; stops: RouteStop[]; offers: RouteOffer[]; pay_breakdown: { label: string; cents: number }[] };
 
 export type RoutePlan = {
   status: "queued" | "running" | "done" | "failed";
@@ -160,7 +184,24 @@ export type AdminBatchesResponse = {
   batches: AdminBatch[];
 };
 
+export type MerchantRoutingResponse = {
+  date: string;
+  ready_unrouted: number;
+  unplaced: number;
+  routed: number;
+  plan: RoutePlan | null;
+  routes: RouteSummary[];
+};
+
 export const api = {
+  merchant: {
+    routing(date: string) {
+      return request<MerchantRoutingResponse>(`/api/v1/merchant/routes?date=${encodeURIComponent(date)}`);
+    },
+    buildRoutes(date: string) {
+      return request<{ plan: RoutePlan }>("/api/v1/merchant/routes/build", { method: "POST", body: JSON.stringify({ date }) }).then((r) => r.plan);
+    },
+  },
   signIn(email: string, password: string) {
     return request<Session>("/api/v1/session", {
       method: "POST",
@@ -194,6 +235,9 @@ export const api = {
     },
     getRoute(id: number | string) {
       return request<{ route: RouteDetail }>(`/api/v1/admin/routes/${id}`).then((r) => r.route);
+    },
+    offerRoute(routeId: number) {
+      return request<{ route: RouteDetail }>(`/api/v1/admin/routes/${routeId}/offer`, { method: "POST", body: "{}" }).then((r) => r.route);
     },
     buildRoutes(merchantId: number, date: string) {
       return request<{ plan: RoutePlan }>("/api/v1/admin/routes/build", {

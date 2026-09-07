@@ -1,6 +1,7 @@
 # Handoff web apps: agent guide
 
-pnpm workspace. `apps/portal` is a Vite + React SPA. No SSR, no server code
+pnpm workspace. `apps/portal` (merchant and ops web) and `apps/courier`
+(courier app, Capacitor) are both Vite + React SPAs. No SSR, no server code
 here; everything talks to the Rails API in `handoff-api`.
 
 ## Portal layout (`apps/portal/src`)
@@ -33,3 +34,18 @@ pnpm --filter portal dlx shadcn@latest add <component>
 - **Maps are MapLibre GL rendering OpenFreeMap's Positron vector style** (`tiles.openfreemap.org`, OpenStreetMap data). No key, no limits, nothing server-side; keep the attribution. `components/batch-map.tsx` owns the map: pins are DOM markers using the `.stop-pin` and `.pickup-pin` classes, routes are one GeoJSON line layer coloured per feature, `preserveDrawingBuffer` stays on so screenshots capture the canvas. Tried and rejected: Leaflet raster tiles from CARTO and Thunderforest (both watermark without a key) and the MapLibre-in-Leaflet plugin (style never loaded). Pins are `L.divIcon` HTML, not image markers, so no asset path setup is needed.
 - **Ports:** the portal runs on 5200 and expects the API on 3200 locally. Those are set in `vite.config.ts` and `lib/api.ts`.
 - Run `pnpm typecheck` and `pnpm lint` before calling a change done.
+
+## Courier app (`apps/courier/src`)
+
+| Concern | Where |
+| --- | --- |
+| Routes | `routes/`, file-based. `_app.tsx` is the signed-in shell with the bottom tab bar; its children live in `routes/_app/`. Only `role: courier` sessions get in. |
+| Data | `lib/api.ts` (courier endpoints under `/api/v1/courier`), `lib/queries.ts` (offers and routes poll every 10 to 15 s). Session key is `handoff.courier.session`, separate from the portal's. |
+| Device | `lib/photo.ts` wraps `@capacitor/camera` and re-encodes to a small JPEG data URL; `lib/location.ts` wraps `@capacitor/geolocation` and has `simulateDrive` for demos. In a browser the camera falls back to a hidden file input (`data-testid="photo-input"`), which mobile browsers open as the camera. |
+| Map | `components/route-map.tsx`: same MapLibre + OpenFreeMap setup as the portal, pins coloured by stop status, the next stop ringed, a courier dot. |
+| Base path | `VITE_BASE_PATH` (default `/`) sets both Vite's `base` and the router `basepath`, so the sandbox can serve it at `/courier/`. Native builds use `/`. |
+| Native | `capacitor.config.ts` plus the generated `ios/` (Swift Package Manager) and `android/` projects, committed. `pnpm build && pnpm cap:sync` copies `dist/` into them; `pnpm cap:ios` / `pnpm cap:android` open Xcode or Android Studio. |
+
+Rules for the courier app: keep screens one-handed (max width 28 rem, big
+buttons, bottom tabs), never show recipient contact details before a route is
+accepted (the API already withholds them), and keep photos under 1.5 MB.

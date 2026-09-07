@@ -47,9 +47,8 @@ type Props = {
 
 // OpenFreeMap serves the Positron style as free vector tiles: no key, no limits.
 // A pale basemap made for data overlays, so routes and pins carry the map.
+// The style carries its own attribution (OpenFreeMap, OpenMapTiles, OpenStreetMap).
 const STYLE_URL = "https://tiles.openfreemap.org/styles/positron";
-const ATTRIBUTION =
-  '<a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 const TORONTO: [number, number] = [-79.3832, 43.6532];
 const ROUTES_SOURCE = "routes";
 const ROUTES_LAYER = "routes-line";
@@ -93,7 +92,7 @@ export function BatchMap({ pickup, stops, routes = [], className, focus }: Props
       canvasContextAttributes: { preserveDrawingBuffer: true },
     });
     map.addControl(new NavigationControl({ showCompass: false }), "top-left");
-    map.addControl(new AttributionControl({ compact: false, customAttribution: ATTRIBUTION }), "bottom-right");
+    map.addControl(new AttributionControl({ compact: false }), "bottom-right");
     map.on("load", () => {
       map.addSource(ROUTES_SOURCE, { type: "geojson", data: { type: "FeatureCollection", features: [] } });
       map.addLayer({

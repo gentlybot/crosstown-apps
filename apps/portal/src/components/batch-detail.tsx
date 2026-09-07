@@ -23,9 +23,11 @@ type Props = {
   problemHint: string;
   /** The merchant's pickup point, drawn on the map. */
   pickup?: MapPickup | null;
+  /** Page-specific actions, shown between the stats and the map. */
+  actions?: ReactNode;
 };
 
-export function BatchDetail({ batch, back, context, retry, problemHint, pickup }: Props) {
+export function BatchDetail({ batch, back, context, retry, problemHint, pickup, actions }: Props) {
   const [problemsOnly, setProblemsOnly] = useState(false);
   const orders = problemsOnly ? batch.orders.filter((o) => o.problems.length > 0) : batch.orders;
 
@@ -118,6 +120,8 @@ export function BatchDetail({ batch, back, context, retry, problemHint, pickup }
               <AlertDescription>{problemHint}</AlertDescription>
             </Alert>
           )}
+
+          {actions}
 
           {mapStops.length > 0 && (
             <Card className="overflow-hidden py-0">

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { AlertTriangle, ChevronDown, ChevronRight, Loader2, Route as RouteIcon } from "lucide-react";
+import { AlertTriangle, ChevronDown, ChevronRight, Loader2, Route as RouteIcon, Send } from "lucide-react";
 import { toast } from "sonner";
 import { BatchMap, type MapPickup, type MapRoute, type MapStop } from "@/components/batch-map";
 import { DayPicker } from "@/components/day-picker";
@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ApiError, api, type MerchantRouting, type RouteDetail } from "@/lib/api";
+import { ApiError, api, type MerchantRouting, type RouteDetail, type RouteStatus } from "@/lib/api";
+import { Badge } from "@/components/ui/badge";
 import { routeColor } from "@/lib/colors";
 import { formatDuration, formatLongDate, formatTime, todayIso } from "@/lib/format";
 import { adminRoutesQuery } from "@/lib/queries";
@@ -218,18 +219,49 @@ function MerchantCard({
   );
 }
 
+const ROUTE_STATUS: Record<RouteStatus, { label: string; className: string }> = {
+  planned: { label: "Planned", className: "bg-secondary text-secondary-foreground" },
+  offered: { label: "Offered", className: "bg-[#f2b640] text-[#17271f]" },
+  assigned: { label: "Assigned", className: "bg-[#1d4ed8] text-white" },
+  in_progress: { label: "In progress", className: "bg-[#1d4ed8] text-white" },
+  completed: { label: "Completed", className: "bg-[#17271f] text-white" },
+  cancelled: { label: "Cancelled", className: "bg-destructive text-white" },
+};
+
 function RouteRow({ route, color, open, onToggle }: { route: RouteDetail; color: string; open: boolean; onToggle: () => void }) {
+  const queryClient = useQueryClient();
+  const offer = useMutation({
+    mutationFn: () => api.admin.offerRoute(route.id),
+    onSuccess: async (r) => {
+      toast.success(`${r.display_name} offered to ${r.offers.length} ${r.offers.length === 1 ? "courier" : "couriers"}.`);
+      await queryClient.invalidateQueries({ queryKey: ["admin", "routes"] });
+    },
+    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not offer the route."),
+  });
+  const status = ROUTE_STATUS[route.status];
+  const openOffers = route.offers.filter((o) => o.status === "offered").length;
   return (
     <div>
-      <button type="button" onClick={onToggle} className="flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-accent/60" aria-expanded={open}>
-        <span className="size-3 shrink-0 rounded-full" style={{ background: color }} />
-        <span className="font-medium">{route.display_name}</span>
-        <span className="text-sm text-muted-foreground">
-          {route.stop_count} stops, {route.distance_km} km, {formatDuration(route.duration_minutes)}. Leaves {formatTime(route.start_at)}.
-        </span>
-        <span className="ml-auto text-xs text-muted-foreground">{route.engine === "vrp_cli" ? "vrp-cli" : route.engine}</span>
-        {open ? <ChevronDown className="size-4 text-muted-foreground" /> : <ChevronRight className="size-4 text-muted-foreground" />}
-      </button>
+      <div className="flex w-full items-center gap-3 px-3 py-2.5 hover:bg-accent/60">
+        <button type="button" onClick={onToggle} className="flex min-w-0 flex-1 items-center gap-3 text-left" aria-expanded={open}>
+          <span className="size-3 shrink-0 rounded-full" style={{ background: color }} />
+          <span className="font-medium">{route.display_name}</span>
+          <Badge className={status.className}>{status.label}</Badge>
+          <span className="truncate text-sm text-muted-foreground">
+            {route.stop_count} stops, {route.distance_km} km, {formatDuration(route.duration_minutes)}. Leaves {formatTime(route.start_at)}.
+            {route.courier ? ` ${route.courier.name}.` : route.status === "offered" ? ` ${openOffers} waiting to answer.` : ""}
+            {route.status === "in_progress" || route.status === "completed" ? ` ${route.delivered_count} delivered, ${route.failed_count} failed.` : ""}
+          </span>
+        </button>
+        {route.status === "planned" && (
+          <Button size="sm" variant="outline" onClick={() => offer.mutate()} disabled={offer.isPending}>
+            <Send className="size-3.5" /> Offer to couriers
+          </Button>
+        )}
+        <button type="button" onClick={onToggle} aria-label={open ? "Hide stops" : "Show stops"}>
+          {open ? <ChevronDown className="size-4 text-muted-foreground" /> : <ChevronRight className="size-4 text-muted-foreground" />}
+        </button>
+      </div>
       {open && (
         <div className="overflow-x-auto">
         <Table>
@@ -240,6 +272,7 @@ function RouteRow({ route, color, open, onToggle }: { route: RouteDetail; color:
               <TableHead>Address</TableHead>
               <TableHead className="text-right">Leg</TableHead>
               <TableHead className="text-right">ETA</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -254,6 +287,9 @@ function RouteRow({ route, color, open, onToggle }: { route: RouteDetail; color:
                 <TableCell className="max-w-[16rem] truncate text-muted-foreground" title={s.address}>{s.address}</TableCell>
                 <TableCell className="whitespace-nowrap text-right tabular-nums">{s.leg_km} km</TableCell>
                 <TableCell className="whitespace-nowrap text-right tabular-nums">{formatTime(s.eta)}</TableCell>
+                <TableCell className="whitespace-nowrap text-sm">
+                  {s.status === "delivered" ? <span className="text-primary">Delivered {s.completed_at ? formatTime(s.completed_at) : ""}</span> : s.status === "failed" ? <span className="text-[#9a5b00]">Not delivered</span> : <span className="text-muted-foreground">Pending</span>}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

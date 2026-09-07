@@ -4,7 +4,7 @@ export type User = {
   id: number;
   name: string;
   email: string;
-  role: "merchant_admin" | "merchant_staff" | "admin";
+  role: "merchant_admin" | "merchant_staff" | "admin" | "courier";
   merchant_id: number | null;
 };
 

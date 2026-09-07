@@ -35,3 +35,13 @@ export const adminRoutesQuery = (date: string) =>
     // Poll while any merchant's routes are being built.
     refetchInterval: (query) => (query.state.data && query.state.data.totals.building > 0 ? 1500 : false),
   });
+
+export const merchantRoutingQuery = (date: string) =>
+  queryOptions({
+    queryKey: ["merchant", "routing", { date }],
+    queryFn: () => api.merchant.routing(date),
+    refetchInterval: (query) => {
+      const status = query.state.data?.plan?.status;
+      return status === "queued" || status === "running" ? 1500 : false;
+    },
+  });
