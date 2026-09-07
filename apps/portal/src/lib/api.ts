@@ -23,9 +23,9 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
   const res = await fetch(`${API_URL}${path}`, { ...init, headers });
 
-  if (res.status === 401 && session) {
+  if (res.status === 401 && session && getSession()?.token === session.token) {
     clearSession();
-    window.location.assign(window.location.pathname.startsWith("/admin") ? "/admin/login" : "/login");
+    window.location.assign(window.location.pathname.startsWith("/admin") ? "/admin/login" : "/merchant/login");
   }
 
   if (res.status === 204) return undefined as T;

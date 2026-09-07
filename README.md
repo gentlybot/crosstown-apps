@@ -11,7 +11,7 @@ local shops in Toronto. This is a pnpm workspace:
   which is how it is tested in previews.
 - `packages/`: shared code once two apps need it.
 
-The API lives in the `handoff-api` repo. Merchants sign in at `/login`
+The API lives in the `handoff-api` repo. Merchants sign in at `/merchant/login`
 (`maya@bloomandstem.example`), Handoff staff at `/admin/login`
 (`ops@handoff.delivery`), password `handoff-demo`. Each sign-in page has a
 one-click demo link.
