@@ -74,3 +74,9 @@ export function useSession(): Session | null {
     () => current,
   );
 }
+
+/** Where a signed-in user lands. */
+export function homeFor(session: Session | null): "/admin/batches" | "/merchant/batches" | "/login" {
+  if (!session) return "/login";
+  return session.user.role === "admin" ? "/admin/batches" : "/merchant/batches";
+}

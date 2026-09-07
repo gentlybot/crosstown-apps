@@ -10,9 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MerchantRouteImport } from './routes/merchant'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as MerchantIndexRouteImport } from './routes/merchant/index'
+import { Route as AdminBatchesIndexRouteImport } from './routes/admin/batches/index'
+import { Route as AdminBatchesBatchIdRouteImport } from './routes/admin/batches/$batchId'
 import { Route as MerchantBatchesIndexRouteImport } from './routes/merchant/batches/index'
 import { Route as MerchantBatchesBatchIdRouteImport } from './routes/merchant/batches/$batchId'
 import { Route as MerchantBatchesNewRouteImport } from './routes/merchant/batches/new'
@@ -20,6 +25,11 @@ import { Route as MerchantBatchesNewRouteImport } from './routes/merchant/batche
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -32,10 +42,30 @@ const MerchantRoute = MerchantRouteImport.update({
   path: '/merchant',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin_/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MerchantIndexRoute = MerchantIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MerchantRoute,
+} as any)
+const AdminBatchesIndexRoute = AdminBatchesIndexRouteImport.update({
+  id: '/batches/',
+  path: '/batches/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBatchesBatchIdRoute = AdminBatchesBatchIdRouteImport.update({
+  id: '/batches/$batchId',
+  path: '/batches/$batchId',
+  getParentRoute: () => AdminRoute,
 } as any)
 const MerchantBatchesIndexRoute = MerchantBatchesIndexRouteImport.update({
   id: '/batches/',
@@ -55,64 +85,94 @@ const MerchantBatchesNewRoute = MerchantBatchesNewRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/merchant': typeof MerchantRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/': typeof AdminIndexRoute
   '/merchant/': typeof MerchantIndexRoute
+  '/admin/batches/$batchId': typeof AdminBatchesBatchIdRoute
   '/merchant/batches/$batchId': typeof MerchantBatchesBatchIdRoute
   '/merchant/batches/new': typeof MerchantBatchesNewRoute
+  '/admin/batches/': typeof AdminBatchesIndexRoute
   '/merchant/batches/': typeof MerchantBatchesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin': typeof AdminIndexRoute
   '/merchant': typeof MerchantIndexRoute
+  '/admin/batches/$batchId': typeof AdminBatchesBatchIdRoute
   '/merchant/batches/$batchId': typeof MerchantBatchesBatchIdRoute
   '/merchant/batches/new': typeof MerchantBatchesNewRoute
+  '/admin/batches': typeof AdminBatchesIndexRoute
   '/merchant/batches': typeof MerchantBatchesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/merchant': typeof MerchantRouteWithChildren
+  '/admin_/login': typeof AdminLoginRoute
+  '/admin/': typeof AdminIndexRoute
   '/merchant/': typeof MerchantIndexRoute
+  '/admin/batches/$batchId': typeof AdminBatchesBatchIdRoute
   '/merchant/batches/$batchId': typeof MerchantBatchesBatchIdRoute
   '/merchant/batches/new': typeof MerchantBatchesNewRoute
+  '/admin/batches/': typeof AdminBatchesIndexRoute
   '/merchant/batches/': typeof MerchantBatchesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/login'
     | '/merchant'
+    | '/admin/login'
+    | '/admin/'
     | '/merchant/'
+    | '/admin/batches/$batchId'
     | '/merchant/batches/$batchId'
     | '/merchant/batches/new'
+    | '/admin/batches/'
     | '/merchant/batches/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
+    | '/admin/login'
+    | '/admin'
     | '/merchant'
+    | '/admin/batches/$batchId'
     | '/merchant/batches/$batchId'
     | '/merchant/batches/new'
+    | '/admin/batches'
     | '/merchant/batches'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/login'
     | '/merchant'
+    | '/admin_/login'
+    | '/admin/'
     | '/merchant/'
+    | '/admin/batches/$batchId'
     | '/merchant/batches/$batchId'
     | '/merchant/batches/new'
+    | '/admin/batches/'
     | '/merchant/batches/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   LoginRoute: typeof LoginRoute
   MerchantRoute: typeof MerchantRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,6 +182,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -138,12 +205,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MerchantRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin_/login': {
+      id: '/admin_/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/merchant/': {
       id: '/merchant/'
       path: '/'
       fullPath: '/merchant/'
       preLoaderRoute: typeof MerchantIndexRouteImport
       parentRoute: typeof MerchantRoute
+    }
+    '/admin/batches/': {
+      id: '/admin/batches/'
+      path: '/batches'
+      fullPath: '/admin/batches/'
+      preLoaderRoute: typeof AdminBatchesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/batches/$batchId': {
+      id: '/admin/batches/$batchId'
+      path: '/batches/$batchId'
+      fullPath: '/admin/batches/$batchId'
+      preLoaderRoute: typeof AdminBatchesBatchIdRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/merchant/batches/': {
       id: '/merchant/batches/'
@@ -169,6 +264,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminBatchesBatchIdRoute: typeof AdminBatchesBatchIdRoute
+  AdminBatchesIndexRoute: typeof AdminBatchesIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+  AdminBatchesBatchIdRoute: AdminBatchesBatchIdRoute,
+  AdminBatchesIndexRoute: AdminBatchesIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface MerchantRouteChildren {
   MerchantIndexRoute: typeof MerchantIndexRoute
   MerchantBatchesBatchIdRoute: typeof MerchantBatchesBatchIdRoute
@@ -189,8 +298,10 @@ const MerchantRouteWithChildren = MerchantRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
   MerchantRoute: MerchantRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

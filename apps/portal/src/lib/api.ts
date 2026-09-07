@@ -25,7 +25,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
   if (res.status === 401 && session) {
     clearSession();
-    window.location.assign("/login");
+    window.location.assign(window.location.pathname.startsWith("/admin") ? "/admin/login" : "/login");
   }
 
   if (res.status === 204) return undefined as T;
@@ -76,6 +76,15 @@ export type Order = {
 
 export type BatchDetail = Batch & { orders: Order[] };
 
+export type MerchantBrief = { id: number; business_name: string; slug: string; cutoff_time: string };
+export type AdminBatch = Batch & { merchant: MerchantBrief };
+export type AdminBatchDetail = BatchDetail & { merchant: MerchantBrief };
+export type AdminBatchesResponse = {
+  date: string;
+  totals: { batches: number; merchants: number; orders: number; ready: number; problems: number; importing: number; failed: number };
+  batches: AdminBatch[];
+};
+
 export const api = {
   signIn(email: string, password: string) {
     return request<Session>("/api/v1/session", {
@@ -94,6 +103,17 @@ export const api = {
   },
   getBatch(id: number | string) {
     return request<{ batch: BatchDetail }>(`/api/v1/merchant/batches/${id}`).then((r) => r.batch);
+  },
+  admin: {
+    listBatches(date: string) {
+      return request<AdminBatchesResponse>(`/api/v1/admin/batches?date=${encodeURIComponent(date)}`);
+    },
+    getBatch(id: number | string) {
+      return request<{ batch: AdminBatchDetail }>(`/api/v1/admin/batches/${id}`).then((r) => r.batch);
+    },
+    listMerchants() {
+      return request<{ merchants: Merchant[] }>("/api/v1/admin/merchants").then((r) => r.merchants);
+    },
   },
   createBatch(input: { file: File; delivery_date?: string; name?: string }) {
     const body = new FormData();

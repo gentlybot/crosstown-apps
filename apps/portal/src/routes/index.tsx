@@ -1,8 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { getSession } from "@/lib/session";
+import { getSession, homeFor } from "@/lib/session";
 
 export const Route = createFileRoute("/")({
   beforeLoad: () => {
-    throw redirect({ to: getSession() ? "/merchant/batches" : "/login" });
+    throw redirect({ to: homeFor(getSession()) });
   },
 });

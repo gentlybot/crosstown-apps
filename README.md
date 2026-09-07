@@ -3,13 +3,16 @@
 The browser apps for **Handoff**, a fictional same-day delivery company for
 local shops in Toronto. This is a pnpm workspace:
 
-- `apps/portal`: the merchant portal (admin portal to follow). Vite, React 19,
-  TanStack Router and Query, shadcn/ui on Tailwind CSS v4.
+- `apps/portal`: the merchant portal and the Handoff ops (admin) portal in one
+  SPA, split by role after sign-in. Vite, React 19, TanStack Router and Query,
+  shadcn/ui on Tailwind CSS v4.
 - `apps/courier`: coming next, the courier app in Capacitor.
 - `packages/`: shared code once two apps need it.
 
-The API lives in the `handoff-api` repo. Sign in with one of its demo accounts
-(password `handoff-demo`), for example `maya@bloomandstem.example`.
+The API lives in the `handoff-api` repo. Merchants sign in at `/login`
+(`maya@bloomandstem.example`), Handoff staff at `/admin/login`
+(`ops@handoff.delivery`), password `handoff-demo`. Each sign-in page has a
+one-click demo link.
 
 ## Develop
 

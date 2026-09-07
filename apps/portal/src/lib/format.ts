@@ -16,3 +16,21 @@ export function tomorrowIso() {
   d.setDate(d.getDate() + 1);
   return d.toLocaleDateString("en-CA"); // YYYY-MM-DD
 }
+
+export function todayIso() {
+  return new Date().toLocaleDateString("en-CA");
+}
+
+export function shiftIso(iso: string, days: number) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const date = new Date(y, m - 1, d);
+  date.setDate(date.getDate() + days);
+  return date.toLocaleDateString("en-CA");
+}
+
+const longDateFmt = new Intl.DateTimeFormat("en-CA", { weekday: "long", month: "long", day: "numeric" });
+
+export function formatLongDate(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return longDateFmt.format(new Date(y, m - 1, d));
+}
