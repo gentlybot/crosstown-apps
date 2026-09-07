@@ -5,6 +5,7 @@ const LABELS: Record<BatchStatus, { label: string; className: string }> = {
   importing: { label: "Checking", className: "bg-secondary text-secondary-foreground" },
   needs_review: { label: "Needs attention", className: "bg-[#f2b640] text-[#17271f]" },
   ready: { label: "Ready", className: "bg-primary text-primary-foreground" },
+  routed: { label: "Routed", className: "bg-[#17271f] text-white" },
   failed: { label: "Failed", className: "bg-destructive text-white" },
 };
 

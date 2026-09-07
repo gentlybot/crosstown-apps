@@ -37,7 +37,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   return data;
 }
 
-export type BatchStatus = "importing" | "needs_review" | "ready" | "failed";
+export type BatchStatus = "importing" | "needs_review" | "ready" | "routed" | "failed";
 
 export type Batch = {
   id: number;
@@ -49,6 +49,7 @@ export type Batch = {
   row_count: number;
   ready_count: number;
   problem_count: number;
+  routed_count: number;
   error_message: string | null;
   imported_at: string | null;
   created_at: string;
@@ -70,15 +71,89 @@ export type Order = {
   notes: string | null;
   quantity: number;
   leave_at_door: boolean;
-  status: "pending" | "problem" | "ready";
+  status: "pending" | "problem" | "ready" | "routed";
   problems: string[];
+  lat: number | null;
+  lng: number | null;
+  geocode_precision: "exact" | "interpolated" | "approximate" | "none" | null;
+  route_id: number | null;
+  route_number: number | null;
+  stop_position: number | null;
 };
 
-export type BatchDetail = Batch & { orders: Order[] };
+export type RouteSummary = {
+  id: number;
+  route_number: number;
+  display_name: string;
+  status: "planned" | "cancelled";
+  engine: string;
+  delivery_date: string;
+  stop_count: number;
+  distance_km: number;
+  duration_minutes: number;
+  start_at: string;
+  start_lat: number;
+  start_lng: number;
+};
 
-export type MerchantBrief = { id: number; business_name: string; slug: string; cutoff_time: string };
+export type RouteStop = {
+  position: number;
+  order_id: number;
+  batch_id: number;
+  recipient_name: string | null;
+  address: string;
+  quantity: number;
+  leave_at_door: boolean;
+  lat: number;
+  lng: number;
+  leg_km: number;
+  eta: string;
+};
+
+export type BatchDetail = Batch & { orders: Order[]; routes: RouteSummary[] };
+
+export type MerchantBrief = {
+  id: number;
+  business_name: string;
+  slug: string;
+  cutoff_time: string;
+  pickup_address: string;
+  pickup_lat: number | null;
+  pickup_lng: number | null;
+};
 export type AdminBatch = Batch & { merchant: MerchantBrief };
 export type AdminBatchDetail = BatchDetail & { merchant: MerchantBrief };
+export type RouteDetail = RouteSummary & { merchant: MerchantBrief; stops: RouteStop[] };
+
+export type RoutePlan = {
+  status: "queued" | "running" | "done" | "failed";
+  engine: string | null;
+  routes_count: number;
+  stops_count: number;
+  unassigned_count: number;
+  error: string | null;
+  started_at: string | null;
+  finished_at: string | null;
+  requested_by: string | null;
+};
+
+export type MerchantRouting = {
+  merchant: MerchantBrief;
+  ready_unrouted: number;
+  unplaced: number;
+  routed: number;
+  problems: number;
+  plan: RoutePlan | null;
+  routes: RouteDetail[];
+};
+
+export type AdminRoutesResponse = {
+  date: string;
+  engine: string;
+  totals: { merchants: number; routes: number; stops: number; unrouted: number; building: number };
+  merchants: MerchantRouting[];
+};
+
 export type AdminBatchesResponse = {
   date: string;
   totals: { batches: number; merchants: number; orders: number; ready: number; problems: number; importing: number; failed: number };
@@ -113,6 +188,18 @@ export const api = {
     },
     listMerchants() {
       return request<{ merchants: Merchant[] }>("/api/v1/admin/merchants").then((r) => r.merchants);
+    },
+    listRoutes(date: string) {
+      return request<AdminRoutesResponse>(`/api/v1/admin/routes?date=${encodeURIComponent(date)}`);
+    },
+    getRoute(id: number | string) {
+      return request<{ route: RouteDetail }>(`/api/v1/admin/routes/${id}`).then((r) => r.route);
+    },
+    buildRoutes(merchantId: number, date: string) {
+      return request<{ plan: RoutePlan }>("/api/v1/admin/routes/build", {
+        method: "POST",
+        body: JSON.stringify({ merchant_id: merchantId, date }),
+      }).then((r) => r.plan);
     },
   },
   createBatch(input: { file: File; delivery_date?: string; name?: string }) {

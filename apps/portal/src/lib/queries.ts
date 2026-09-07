@@ -27,3 +27,11 @@ export const adminBatchQuery = (id: string) =>
     queryFn: () => api.admin.getBatch(id),
     refetchInterval: (query) => (query.state.data?.status === "importing" ? 1500 : false),
   });
+
+export const adminRoutesQuery = (date: string) =>
+  queryOptions({
+    queryKey: ["admin", "routes", { date }],
+    queryFn: () => api.admin.listRoutes(date),
+    // Poll while any merchant's routes are being built.
+    refetchInterval: (query) => (query.state.data && query.state.data.totals.building > 0 ? 1500 : false),
+  });

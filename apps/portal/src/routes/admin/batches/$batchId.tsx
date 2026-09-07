@@ -17,10 +17,13 @@ function AdminBatchPage() {
   const { batchId } = Route.useParams();
   const { date } = Route.useSearch();
   const { data: batch } = useSuspenseQuery(adminBatchQuery(batchId));
+  const m = batch.merchant;
+  const pickup = m.pickup_lat !== null && m.pickup_lng !== null ? { lat: m.pickup_lat, lng: m.pickup_lng, label: m.pickup_address } : null;
 
   return (
     <BatchDetail
       batch={batch}
+      pickup={pickup}
       back={{ to: "/admin/batches", label: "All batches", search: { date: date ?? batch.delivery_date } }}
       context={
         <p className="mt-1 text-sm">

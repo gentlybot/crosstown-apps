@@ -16,6 +16,8 @@ export type Merchant = {
   contact_email: string;
   phone: string | null;
   pickup_address: string;
+  pickup_lat: number | null;
+  pickup_lng: number | null;
   cutoff_time: string;
   timezone: string;
 };

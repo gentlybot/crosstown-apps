@@ -4,6 +4,7 @@ import { BatchDetail } from "@/components/batch-detail";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { batchQuery } from "@/lib/queries";
+import { useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/merchant/batches/$batchId")({
   loader: ({ context: { queryClient }, params }) => queryClient.ensureQueryData(batchQuery(params.batchId)),
@@ -14,10 +15,16 @@ export const Route = createFileRoute("/merchant/batches/$batchId")({
 function BatchPage() {
   const { batchId } = Route.useParams();
   const { data: batch } = useSuspenseQuery(batchQuery(batchId));
+  const merchant = useSession()?.merchant;
+  const pickup =
+    merchant && merchant.pickup_lat !== null && merchant.pickup_lng !== null
+      ? { lat: merchant.pickup_lat, lng: merchant.pickup_lng, label: merchant.pickup_address }
+      : null;
 
   return (
     <BatchDetail
       batch={batch}
+      pickup={pickup}
       back={{ to: "/merchant/batches", label: "Batches" }}
       problemHint="Correct the rows in your spreadsheet and upload the file again, or send the fixes to Handoff before your cutoff."
       retry={

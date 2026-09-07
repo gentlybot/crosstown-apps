@@ -34,3 +34,15 @@ export function formatLongDate(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
   return longDateFmt.format(new Date(y, m - 1, d));
 }
+
+const timeFmt = new Intl.DateTimeFormat("en-CA", { hour: "numeric", minute: "2-digit" });
+
+export function formatTime(iso: string) {
+  return timeFmt.format(new Date(iso));
+}
+
+export function formatDuration(minutes: number) {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return h > 0 ? `${h} h ${m} min` : `${m} min`;
+}

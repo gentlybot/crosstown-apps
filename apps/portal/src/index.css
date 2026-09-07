@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "maplibre-gl/dist/maplibre-gl.css";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
@@ -152,4 +153,42 @@
 
 body {
   min-height: 100dvh;
+}
+
+/* Map pins: numbered stops and the pickup marker. */
+.stop-pin {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(23, 39, 31, 0.35);
+  color: #fff;
+  font: 600 11px/1 "Geist Variable", system-ui, sans-serif;
+}
+.pickup-pin {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 2px solid #17271f;
+  background: #f2b640;
+  color: #17271f;
+  font: 700 12px/1 "Geist Variable", system-ui, sans-serif;
+  box-shadow: 0 1px 3px rgba(23, 39, 31, 0.35);
+}
+.maplibregl-map {
+  font-family: inherit;
+  border-radius: calc(var(--radius) - 2px);
+}
+.maplibregl-popup-content {
+  font: 12px/1.35 inherit;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: #17271f;
+}
+.maplibregl-ctrl-attrib {
+  font-size: 11px;
 }

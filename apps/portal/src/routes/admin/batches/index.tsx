@@ -1,13 +1,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { BatchStatusBadge } from "@/components/batch-status-badge";
-import { Button } from "@/components/ui/button";
+import { DayPicker } from "@/components/day-picker";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatDateTime, formatLongDate, shiftIso, todayIso } from "@/lib/format";
+import { formatDateTime, formatLongDate, todayIso } from "@/lib/format";
 import { adminBatchesQuery } from "@/lib/queries";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -28,8 +26,6 @@ function AdminBatchesPage() {
   const date = search.date ?? todayIso();
   const navigate = useNavigate({ from: Route.fullPath });
   const { data } = useSuspenseQuery(adminBatchesQuery(date));
-  const isToday = date === todayIso();
-
   function goTo(next: string) {
     void navigate({ search: { date: next } });
   }
@@ -41,26 +37,7 @@ function AdminBatchesPage() {
           <h1 className="text-2xl font-semibold tracking-tight">Batches</h1>
           <p className="text-sm text-muted-foreground">Every merchant's uploads for one delivery day.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" aria-label="Previous day" onClick={() => goTo(shiftIso(date, -1))}>
-            <ChevronLeft className="size-4" />
-          </Button>
-          <Input
-            type="date"
-            aria-label="Delivery date"
-            className="w-[11rem]"
-            value={date}
-            onChange={(e) => e.target.value && goTo(e.target.value)}
-          />
-          <Button variant="outline" size="icon" aria-label="Next day" onClick={() => goTo(shiftIso(date, 1))}>
-            <ChevronRight className="size-4" />
-          </Button>
-          {!isToday && (
-            <Button variant="ghost" size="sm" onClick={() => goTo(todayIso())}>
-              Today
-            </Button>
-          )}
-        </div>
+        <DayPicker date={date} onChange={goTo} />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

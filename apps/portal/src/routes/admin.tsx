@@ -14,7 +14,10 @@ export const Route = createFileRoute("/admin")({
 function AdminLayout() {
   return (
     <div className="min-h-dvh">
-      <PortalHeader context="Handoff ops" home="/admin/batches" signInPath="/admin/login" nav={[{ label: "Batches", to: "/admin/batches" }]} />
+      <PortalHeader context="Handoff ops" home="/admin/batches" signInPath="/admin/login" nav={[
+          { label: "Batches", to: "/admin/batches" },
+          { label: "Routes", to: "/admin/routes" },
+        ]} />
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <Outlet />
       </main>
