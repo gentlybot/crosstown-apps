@@ -1,0 +1,18 @@
+const dateFmt = new Intl.DateTimeFormat("en-CA", { weekday: "short", month: "short", day: "numeric" });
+const dateTimeFmt = new Intl.DateTimeFormat("en-CA", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+
+/** "2026-09-09" is a calendar date, so build it locally to avoid a UTC day shift. */
+export function formatDate(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return dateFmt.format(new Date(y, m - 1, d));
+}
+
+export function formatDateTime(iso: string) {
+  return dateTimeFmt.format(new Date(iso));
+}
+
+export function tomorrowIso() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return d.toLocaleDateString("en-CA"); // YYYY-MM-DD
+}

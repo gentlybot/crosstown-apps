@@ -1,0 +1,23 @@
+# Gently workspace runtime for the Handoff web apps.
+# The portal is a Vite SPA. It calls the API repo's routes (/api) on the same
+# origin, so VITE_API_URL is the environment's own URL.
+
+tools:
+  - nodejs_22
+  - pnpm
+
+setup:
+  - pnpm install
+
+apps:
+  portal:
+    port: 5200
+    routes:
+      - path: /
+    env:
+      VITE_API_URL: "{{ gently.GENTLY_ENVIRONMENT_URL }}"
+      VITE_ALLOWED_HOSTS: "{{ gently.GENTLY_DOMAIN }}"
+    startup:
+      - pnpm --filter portal dev
+    health:
+      - endpoint: /
