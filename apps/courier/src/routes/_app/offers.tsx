@@ -104,7 +104,7 @@ function OfferCard({ offer }: { offer: Offer }) {
             Decline
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">{minutes > 0 ? `Closes in ${minutes} min` : "Closing now"}</p>
+        <p className="text-xs text-muted-foreground">{minutes > 0 ? `Closes in ${formatDuration(minutes)}` : "Closing now"}</p>
       </CardContent>
     </Card>
   );
