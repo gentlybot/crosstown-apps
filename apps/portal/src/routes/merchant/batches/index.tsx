@@ -42,7 +42,7 @@ function BatchesPage() {
             <div>
               <h2 className="font-semibold">No batches yet</h2>
               <p className="mt-1 max-w-md text-sm text-muted-foreground">
-                Upload a CSV of orders and Handoff will check every address before anything is picked up.
+                Upload a CSV of orders and Crosstown will check every address before anything is picked up.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">

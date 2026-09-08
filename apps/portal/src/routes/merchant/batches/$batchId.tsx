@@ -28,7 +28,7 @@ function BatchPage() {
       pickup={pickup}
       actions={<MerchantRoutingCard date={batch.delivery_date} batchId={batchId} />}
       back={{ to: "/merchant/batches", label: "Batches" }}
-      problemHint="Correct the rows in your spreadsheet and upload the file again, or send the fixes to Handoff before your cutoff."
+      problemHint="Correct the rows in your spreadsheet and upload the file again, or send the fixes to Crosstown before your cutoff."
       retry={
         <Button asChild variant="outline" size="sm" className="w-fit">
           <Link to="/merchant/batches/new">Upload a different file</Link>

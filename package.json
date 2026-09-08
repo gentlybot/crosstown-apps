@@ -1,7 +1,7 @@
 {
-  "name": "handoff-apps",
+  "name": "crosstown-apps",
   "private": true,
-  "description": "Handoff web apps: the merchant and admin portal, and later the courier app.",
+  "description": "Crosstown web apps: the merchant and admin portal, and later the courier app.",
   "scripts": {
     "dev": "pnpm -r --parallel dev",
     "dev:portal": "pnpm --filter portal dev",

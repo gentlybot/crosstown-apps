@@ -1,4 +1,4 @@
-package com.handoff.courier;
+package com.crosstown.courier;
 
 import com.getcapacitor.BridgeActivity;
 

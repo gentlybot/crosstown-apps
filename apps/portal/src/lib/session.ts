@@ -24,7 +24,7 @@ export type Merchant = {
 
 export type Session = { token: string; user: User; merchant: Merchant | null };
 
-const KEY = "handoff.session";
+const KEY = "crosstown.session";
 const listeners = new Set<() => void>();
 
 function read(): Session | null {

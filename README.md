@@ -1,9 +1,9 @@
-# Handoff web apps
+# Crosstown web apps
 
-The browser apps for **Handoff**, a fictional same-day delivery company for
+The browser apps for **Crosstown**, a fictional same-day delivery company for
 local shops in Toronto. This is a pnpm workspace:
 
-- `apps/portal`: the merchant portal and the Handoff ops (admin) portal in one
+- `apps/portal`: the merchant portal and the Crosstown ops (admin) portal in one
   SPA, split by role after sign-in. Vite, React 19, TanStack Router and Query,
   shadcn/ui on Tailwind CSS v4.
 - `apps/courier`: the courier app. Same stack, wrapped in Capacitor for iOS
@@ -11,9 +11,9 @@ local shops in Toronto. This is a pnpm workspace:
   which is how it is tested in previews.
 - `packages/`: shared code once two apps need it.
 
-The API lives in the `handoff-api` repo. Merchants sign in at `/merchant/login`
-(`maya@bloomandstem.example`), Handoff staff at `/admin/login`
-(`ops@handoff.delivery`), password `handoff-demo`. Each sign-in page has a
+The API lives in the `crosstown-api` repo. Merchants sign in at `/merchant/login`
+(`maya@bloomandstem.example`), Crosstown staff at `/admin/login`
+(`ops@crosstown.delivery`), password `crosstown-demo`. Each sign-in page has a
 one-click demo link.
 
 ## Develop

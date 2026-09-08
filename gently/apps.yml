@@ -1,4 +1,4 @@
-# Gently workspace runtime for the Handoff web apps.
+# Gently workspace runtime for the Crosstown web apps.
 # Two Vite SPAs: the portal at / and the courier app (a Capacitor web build)
 # at /courier/. Both call the API repo's routes (/api) on the same origin, so
 # VITE_API_URL is the environment's own URL.

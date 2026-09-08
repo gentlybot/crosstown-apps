@@ -36,7 +36,7 @@ export function PortalHeader({ context, home, signInPath, nav }: Props) {
         <div className="flex items-center gap-6">
           <Link to={home} className="flex items-center gap-2 font-semibold tracking-tight">
             <BrandMark className="h-6 w-auto" />
-            <span>Handoff</span>
+            <span>Crosstown</span>
           </Link>
           <span className="hidden text-sm text-muted-foreground sm:inline">{context}</span>
           <nav className="flex items-center gap-1 text-sm">

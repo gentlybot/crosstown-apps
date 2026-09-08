@@ -129,7 +129,7 @@
     @apply font-sans;
     }
 }
-/* Handoff palette over the shadcn defaults. Paper ground, green ink, moss primary. */
+/* Crosstown palette over the shadcn defaults. Paper ground, green ink, moss primary. */
 :root {
   --background: #f5f6f2;
   --foreground: #17271f;

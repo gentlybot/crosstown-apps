@@ -129,7 +129,7 @@
     }
 }@import "maplibre-gl/dist/maplibre-gl.css";
 
-/* Handoff palette over the shadcn defaults. */
+/* Crosstown palette over the shadcn defaults. */
 :root {
   --background: #f5f6f2;
   --foreground: #17271f;

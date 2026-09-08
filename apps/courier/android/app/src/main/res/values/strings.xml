@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Handoff Courier</string>
-    <string name="title_activity_main">Handoff Courier</string>
-    <string name="package_name">com.handoff.courier</string>
-    <string name="custom_url_scheme">com.handoff.courier</string>
+    <string name="app_name">Crosstown Courier</string>
+    <string name="title_activity_main">Crosstown Courier</string>
+    <string name="package_name">com.crosstown.courier</string>
+    <string name="custom_url_scheme">com.crosstown.courier</string>
 </resources>

@@ -14,7 +14,7 @@ function NotFound() {
       <h1 className="text-2xl font-semibold tracking-tight">That page is not on the route.</h1>
       <p className="text-muted-foreground">Check the address, or head back to your batches.</p>
       <Button asChild>
-        <Link to="/">Go to Handoff</Link>
+        <Link to="/">Go to Crosstown</Link>
       </Button>
     </main>
   );

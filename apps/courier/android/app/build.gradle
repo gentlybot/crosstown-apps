@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.handoff.courier"
+    namespace = "com.crosstown.courier"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.handoff.courier"
+        applicationId "com.crosstown.courier"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

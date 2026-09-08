@@ -12,12 +12,12 @@ export const Route = createFileRoute("/merchant_/login")({
   component: () => (
     <LoginForm
       title="Sign in"
-      description="Use the email your Handoff account was set up with."
+      description="Use the email your Crosstown account was set up with."
       audience="merchant"
       demo={{ label: "Sign in as Maya at Bloom & Stem", email: "maya@bloomandstem.example" }}
       footer={
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          Handoff staff?{" "}
+          Crosstown staff?{" "}
           <Link to="/admin/login" className="underline-offset-4 hover:text-foreground hover:underline">
             Sign in to ops
           </Link>

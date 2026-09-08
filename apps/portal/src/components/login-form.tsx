@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { ApiError, api } from "@/lib/api";
 import { homeFor, setSession, type Session } from "@/lib/session";
 
-export const DEMO_PASSWORD = "handoff-demo";
+export const DEMO_PASSWORD = "crosstown-demo";
 
 type Props = {
   title: string;
@@ -33,17 +33,17 @@ export function LoginForm({ title, description, audience, demo, footer }: Props)
     try {
       const session: Session = await api.signIn(emailToUse, passwordToUse);
       if (session.user.role === "courier") {
-        setError("Couriers use the Handoff courier app, not this site.");
+        setError("Couriers use the Crosstown courier app, not this site.");
         return;
       }
       if (audience === "staff" && session.user.role !== "admin") {
-        setError("This sign-in is for Handoff staff. Merchants sign in at the main page.");
+        setError("This sign-in is for Crosstown staff. Merchants sign in at the main page.");
         return;
       }
       setSession(session);
       await navigate({ to: homeFor(session) });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Could not reach Handoff. Try again in a moment.");
+      setError(err instanceof ApiError ? err.message : "Could not reach Crosstown. Try again in a moment.");
     } finally {
       setBusy(false);
     }
@@ -59,7 +59,7 @@ export function LoginForm({ title, description, audience, demo, footer }: Props)
       <div className="w-full max-w-sm">
         <div className="mb-6 flex items-center gap-2.5">
           <BrandMark className="h-8 w-auto" />
-          <span className="text-xl font-semibold tracking-tight">Handoff</span>
+          <span className="text-xl font-semibold tracking-tight">Crosstown</span>
           {audience === "staff" && <span className="ml-1 text-sm text-muted-foreground">ops</span>}
         </div>
         <Card>

@@ -4,7 +4,7 @@ export type User = { id: number; name: string; email: string; role: string; merc
 export type CourierProfile = { id: number; name: string; email: string; phone: string | null; vehicle_type: string; home_fsa: string | null; status: string };
 export type Session = { token: string; user: User; courier: CourierProfile | null };
 
-const KEY = "handoff.courier.session";
+const KEY = "crosstown.courier.session";
 const listeners = new Set<() => void>();
 
 function read(): Session | null {

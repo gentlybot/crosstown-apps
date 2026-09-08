@@ -12,9 +12,9 @@ export const Route = createFileRoute("/admin_/login")({
   component: () => (
     <LoginForm
       title="Staff sign in"
-      description="For the Handoff operations team."
+      description="For the Crosstown operations team."
       audience="staff"
-      demo={{ label: "Sign in as Priya in Handoff ops", email: "ops@handoff.delivery" }}
+      demo={{ label: "Sign in as Priya in Crosstown ops", email: "ops@crosstown.delivery" }}
       footer={
         <p className="mt-6 text-center text-xs text-muted-foreground">
           Running a shop?{" "}

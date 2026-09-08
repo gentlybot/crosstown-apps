@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { ApiError, api } from "@/lib/api";
 import { getSession, setSession } from "@/lib/session";
 
-const DEMO = { email: "jordan@courier.example", password: "handoff-demo" };
+const DEMO = { email: "jordan@courier.example", password: "crosstown-demo" };
 
 export const Route = createFileRoute("/login")({
   beforeLoad: () => {
@@ -31,13 +31,13 @@ function LoginPage() {
     try {
       const session = await api.signIn(e, p);
       if (session.user.role !== "courier" || !session.courier) {
-        setError("This app is for Handoff couriers. Shops and staff sign in on the web.");
+        setError("This app is for Crosstown couriers. Shops and staff sign in on the web.");
         return;
       }
       setSession(session);
       await navigate({ to: "/offers" });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Could not reach Handoff. Check your connection.");
+      setError(err instanceof ApiError ? err.message : "Could not reach Crosstown. Check your connection.");
     } finally {
       setBusy(false);
     }
@@ -53,7 +53,7 @@ function LoginPage() {
       <div className="mb-6 flex items-center gap-2.5">
         <BrandMark className="h-9 w-auto" />
         <div>
-          <p className="text-xl font-semibold leading-tight tracking-tight">Handoff</p>
+          <p className="text-xl font-semibold leading-tight tracking-tight">Crosstown</p>
           <p className="text-sm text-muted-foreground">Courier</p>
         </div>
       </div>
