@@ -33,5 +33,7 @@ apps:
       VITE_BASE_PATH: /courier/
     startup:
       - pnpm --filter courier dev
+    # Gently probes health endpoints without a trailing slash, and Vite answers
+    # a bare base path (/courier) with a redirect, so probe a file instead.
     health:
-      - endpoint: /courier/
+      - endpoint: /courier/index.html
