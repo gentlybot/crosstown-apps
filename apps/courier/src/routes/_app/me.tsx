@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -10,12 +10,26 @@ import { formatDate } from "@/lib/format";
 import { availabilityQuery } from "@/lib/queries";
 import { clearSession, useSession } from "@/lib/session";
 
-const dateAtOffset = (offset: number) => {
-  const date = new Date();
+const dateAtOffset = (offset: number, baseDate = new Date()) => {
+  const date = new Date(baseDate);
   date.setHours(12, 0, 0, 0);
   date.setDate(date.getDate() + offset);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 };
+
+function useAvailabilityDays() {
+  const [today, setToday] = useState(() => new Date());
+
+  useEffect(() => {
+    const now = new Date();
+    const nextMidnight = new Date(now);
+    nextMidnight.setHours(24, 0, 0, 0);
+    const timeout = window.setTimeout(() => setToday(new Date()), nextMidnight.getTime() - now.getTime() + 100);
+    return () => window.clearTimeout(timeout);
+  }, [today]);
+
+  return useMemo(() => Array.from({ length: 14 }, (_, index) => dateAtOffset(index, today)), [today]);
+}
 
 export const Route = createFileRoute("/_app/me")({
   loader: ({ context: { queryClient } }) => queryClient.ensureQueryData(availabilityQuery(dateAtOffset(0), dateAtOffset(13))),
@@ -28,7 +42,7 @@ function MePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const courier = session?.courier;
-  const days = useMemo(() => Array.from({ length: 14 }, (_, index) => dateAtOffset(index)), []);
+  const days = useAvailabilityDays();
   const availability = availabilityQuery(days[0], days.at(-1)!);
   const { data } = useSuspenseQuery(availability);
   const availableDates = new Set(data.availability_dates);
