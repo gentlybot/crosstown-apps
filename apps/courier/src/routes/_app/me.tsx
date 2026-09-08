@@ -4,6 +4,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ApiError, api } from "@/lib/api";
 import { formatDate } from "@/lib/format";
 import { availabilityQuery } from "@/lib/queries";
@@ -18,6 +19,7 @@ const dateAtOffset = (offset: number) => {
 
 export const Route = createFileRoute("/_app/me")({
   loader: ({ context: { queryClient } }) => queryClient.ensureQueryData(availabilityQuery(dateAtOffset(0), dateAtOffset(13))),
+  pendingComponent: () => <Skeleton className="m-4 h-64" />,
   component: MePage,
 });
 
