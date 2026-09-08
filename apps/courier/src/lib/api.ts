@@ -49,6 +49,8 @@ export type MerchantBrief = {
   pickup_lng: number | null;
 };
 
+export type Availability = { availability_dates: string[] };
+
 export type PayLine = { label: string; cents: number };
 
 export type CourierStop = {
@@ -121,6 +123,10 @@ export const api = {
     list: () => request<{ offers: Offer[] }>("/api/v1/courier/offers").then((r) => r.offers),
     accept: (id: number) => request<{ route: CourierRoute }>(`/api/v1/courier/offers/${id}/accept`, { method: "POST", body: "{}" }).then((r) => r.route),
     decline: (id: number) => request<void>(`/api/v1/courier/offers/${id}/decline`, { method: "POST", body: "{}" }),
+  },
+  availability: {
+    get: (from: string, to: string) => request<Availability>(`/api/v1/courier/availability?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`),
+    set: (date: string, available: boolean) => request<{ date: string; available: boolean }>("/api/v1/courier/availability", { method: "PATCH", body: JSON.stringify({ date, available }) }),
   },
   routes: {
     list: () => request<{ routes: CourierRoute[] }>("/api/v1/courier/routes").then((r) => r.routes),

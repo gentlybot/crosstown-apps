@@ -1,15 +1,40 @@
+import { useMemo } from "react";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { api } from "@/lib/api";
+import { ApiError, api } from "@/lib/api";
+import { formatDate } from "@/lib/format";
+import { availabilityQuery } from "@/lib/queries";
 import { clearSession, useSession } from "@/lib/session";
 
-export const Route = createFileRoute("/_app/me")({ component: MePage });
+const dateAtOffset = (offset: number) => {
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+  date.setDate(date.getDate() + offset);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+};
+
+export const Route = createFileRoute("/_app/me")({
+  loader: ({ context: { queryClient } }) => queryClient.ensureQueryData(availabilityQuery(dateAtOffset(0), dateAtOffset(13))),
+  component: MePage,
+});
 
 function MePage() {
   const session = useSession();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const courier = session?.courier;
+  const days = useMemo(() => Array.from({ length: 14 }, (_, index) => dateAtOffset(index)), []);
+  const availability = availabilityQuery(days[0], days.at(-1)!);
+  const { data } = useSuspenseQuery(availability);
+  const availableDates = new Set(data.availability_dates);
+  const updateAvailability = useMutation({
+    mutationFn: ({ date, available }: { date: string; available: boolean }) => api.availability.set(date, available),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["availability"] }),
+    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not update availability."),
+  });
 
   async function signOut() {
     try {
@@ -48,6 +73,31 @@ function MePage() {
           </dl>
         </CardContent>
       </Card>
+      <section className="space-y-3" aria-labelledby="availability-heading">
+        <header>
+          <h2 id="availability-heading" className="text-lg font-semibold">Availability</h2>
+          <p className="text-sm text-muted-foreground">Choose the days you can work. You’ll only receive route offers for selected days.</p>
+        </header>
+        <div className="grid grid-cols-2 gap-2">
+          {days.map((date) => {
+            const available = availableDates.has(date);
+            const updatingThisDay = updateAvailability.isPending && updateAvailability.variables?.date === date;
+            return (
+              <Button
+                key={date}
+                variant={available ? "default" : "outline"}
+                className="h-auto min-h-18 flex-col items-start gap-1 px-3 py-3 text-left"
+                aria-pressed={available}
+                disabled={updatingThisDay}
+                onClick={() => updateAvailability.mutate({ date, available: !available })}
+              >
+                <span>{formatDate(date)}</span>
+                <span className="text-xs font-normal opacity-80">{updatingThisDay ? "Saving…" : available ? "Available" : "Not available"}</span>
+              </Button>
+            );
+          })}
+        </div>
+      </section>
       <Button variant="outline" className="w-full" onClick={signOut}>
         Sign out
       </Button>
