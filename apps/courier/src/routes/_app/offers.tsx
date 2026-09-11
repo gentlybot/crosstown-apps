@@ -60,7 +60,7 @@ function OfferCard({ offer }: { offer: Offer }) {
     },
   });
   const decline = useMutation({
-    mutationFn: () => api.offers.decline(offer.id),
+    mutationFn: () => api.offers.accept(offer.id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["offers"] }),
   });
 
