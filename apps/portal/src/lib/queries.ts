@@ -1,6 +1,13 @@
 import { queryOptions } from "@tanstack/react-query";
 import { api } from "./api";
 
+export const deliveryAllowancesQuery = (userId: number) =>
+  queryOptions({
+    queryKey: ["merchant", "delivery-allowances", userId],
+    queryFn: api.merchant.deliveryAllowances,
+    staleTime: 0,
+  });
+
 export const batchesQuery = queryOptions({
   queryKey: ["batches"],
   queryFn: api.listBatches,

@@ -193,8 +193,50 @@ export type MerchantRoutingResponse = {
   routes: RouteSummary[];
 };
 
+export type DeliveryServiceType = "same_day" | "next_day" | "return_pickup" | "redelivery";
+export type AllowanceUsage = { limit: number; used: number; remaining: number };
+export type DeliveryAllowance = {
+  service_type: DeliveryServiceType;
+  label: string;
+  description: string;
+  enabled: boolean;
+  unit: "jobs";
+  merchant: AllowanceUsage;
+  // A null limit means no personal cap; zero blocks personal bookings.
+  personal: { limit: number | null; used: number; remaining: number | null };
+  available_to_you: number;
+  blocked_by: ("service_disabled" | "merchant_limit" | "personal_limit")[];
+};
+export type DeliveryAllowancesResponse = {
+  period_start: string;
+  resets_on: string;
+  timezone: string;
+  merchant: { id: number; name: string };
+  user: { id: number; name: string };
+  allowances: DeliveryAllowance[];
+};
+export type DeliveryReservation = {
+  id: number;
+  service_type: DeliveryServiceType;
+  units: number;
+  period_start: string;
+  request_key: string;
+  cancelled_at: string | null;
+};
+
 export const api = {
   merchant: {
+    deliveryAllowances() {
+      return request<DeliveryAllowancesResponse>("/api/v1/merchant/delivery_allowances");
+    },
+    reserveDeliveryAllowance(input: { service_type: DeliveryServiceType; units: number; request_key: string }) {
+      return request<{ reservation: DeliveryReservation; balance: DeliveryAllowancesResponse }>("/api/v1/merchant/delivery_reservations", {
+        method: "POST", body: JSON.stringify(input),
+      });
+    },
+    cancelDeliveryReservation(id: number) {
+      return request<void>(`/api/v1/merchant/delivery_reservations/${id}`, { method: "DELETE" });
+    },
     routing(date: string) {
       return request<MerchantRoutingResponse>(`/api/v1/merchant/routes?date=${encodeURIComponent(date)}`);
     },
