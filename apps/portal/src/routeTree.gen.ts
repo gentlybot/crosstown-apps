@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CustomerRouteImport } from './routes/customer'
 import { Route as MerchantRouteImport } from './routes/merchant'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
+import { Route as CustomerIndexRouteImport } from './routes/customer/index'
 import { Route as MerchantIndexRouteImport } from './routes/merchant/index'
 import { Route as MerchantLoginRouteImport } from './routes/merchant_.login'
 import { Route as AdminBatchesIndexRouteImport } from './routes/admin/batches/index'
@@ -33,6 +35,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CustomerRoute = CustomerRouteImport.update({
+  id: '/customer',
+  path: '/customer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MerchantRoute = MerchantRouteImport.update({
   id: '/merchant',
   path: '/merchant',
@@ -47,6 +54,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin_/login',
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
+} as any)
+const CustomerIndexRoute = CustomerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CustomerRoute,
 } as any)
 const MerchantIndexRoute = MerchantIndexRouteImport.update({
   id: '/',
@@ -92,10 +104,12 @@ const MerchantBatchesNewRoute = MerchantBatchesNewRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/customer': typeof CustomerRouteWithChildren
   '/merchant': typeof MerchantRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/merchant/login': typeof MerchantLoginRoute
   '/admin/': typeof AdminIndexRoute
+  '/customer/': typeof CustomerIndexRoute
   '/merchant/': typeof MerchantIndexRoute
   '/admin/batches/$batchId': typeof AdminBatchesBatchIdRoute
   '/merchant/batches/$batchId': typeof MerchantBatchesBatchIdRoute
@@ -109,6 +123,7 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/merchant/login': typeof MerchantLoginRoute
   '/admin': typeof AdminIndexRoute
+  '/customer': typeof CustomerIndexRoute
   '/merchant': typeof MerchantIndexRoute
   '/admin/batches/$batchId': typeof AdminBatchesBatchIdRoute
   '/merchant/batches/$batchId': typeof MerchantBatchesBatchIdRoute
@@ -121,10 +136,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/customer': typeof CustomerRouteWithChildren
   '/merchant': typeof MerchantRouteWithChildren
   '/admin_/login': typeof AdminLoginRoute
   '/merchant_/login': typeof MerchantLoginRoute
   '/admin/': typeof AdminIndexRoute
+  '/customer/': typeof CustomerIndexRoute
   '/merchant/': typeof MerchantIndexRoute
   '/admin/batches/$batchId': typeof AdminBatchesBatchIdRoute
   '/merchant/batches/$batchId': typeof MerchantBatchesBatchIdRoute
@@ -138,10 +155,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/customer'
     | '/merchant'
     | '/admin/login'
     | '/merchant/login'
     | '/admin/'
+    | '/customer/'
     | '/merchant/'
     | '/admin/batches/$batchId'
     | '/merchant/batches/$batchId'
@@ -155,6 +174,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/merchant/login'
     | '/admin'
+    | '/customer'
     | '/merchant'
     | '/admin/batches/$batchId'
     | '/merchant/batches/$batchId'
@@ -166,10 +186,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/customer'
     | '/merchant'
     | '/admin_/login'
     | '/merchant_/login'
     | '/admin/'
+    | '/customer/'
     | '/merchant/'
     | '/admin/batches/$batchId'
     | '/merchant/batches/$batchId'
@@ -182,6 +204,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  CustomerRoute: typeof CustomerRouteWithChildren
   MerchantRoute: typeof MerchantRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
   MerchantLoginRoute: typeof MerchantLoginRoute
@@ -201,6 +224,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/customer': {
+      id: '/customer'
+      path: '/customer'
+      fullPath: '/customer'
+      preLoaderRoute: typeof CustomerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merchant': {
@@ -223,6 +253,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/customer/': {
+      id: '/customer/'
+      path: '/'
+      fullPath: '/customer/'
+      preLoaderRoute: typeof CustomerIndexRouteImport
+      parentRoute: typeof CustomerRoute
     }
     '/merchant/': {
       id: '/merchant/'
@@ -299,6 +336,18 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface CustomerRouteChildren {
+  CustomerIndexRoute: typeof CustomerIndexRoute
+}
+
+const CustomerRouteChildren: CustomerRouteChildren = {
+  CustomerIndexRoute: CustomerIndexRoute,
+}
+
+const CustomerRouteWithChildren = CustomerRoute._addFileChildren(
+  CustomerRouteChildren,
+)
+
 interface MerchantRouteChildren {
   MerchantIndexRoute: typeof MerchantIndexRoute
   MerchantBatchesBatchIdRoute: typeof MerchantBatchesBatchIdRoute
@@ -320,6 +369,7 @@ const MerchantRouteWithChildren = MerchantRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  CustomerRoute: CustomerRouteWithChildren,
   MerchantRoute: MerchantRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
   MerchantLoginRoute: MerchantLoginRoute,
