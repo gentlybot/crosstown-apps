@@ -7,16 +7,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ApiError, api } from "@/lib/api";
+import { demoEnabled } from "@/lib/demo";
 import { homeFor, setSession, type Session } from "@/lib/session";
-
-export const DEMO_PASSWORD = "crosstown-demo";
 
 type Props = {
   title: string;
   description: string;
   /** "staff" refuses merchant accounts; "merchant" sends staff to the ops portal. */
   audience: "merchant" | "staff";
-  demo: { label: string; email: string };
+  demo?: { label: string; email: string };
   footer?: React.ReactNode;
 };
 
@@ -95,17 +94,19 @@ export function LoginForm({ title, description, audience, demo, footer }: Props)
             </form>
           </CardContent>
         </Card>
-        <p className="mt-4 text-center text-xs text-muted-foreground">
-          Demo workspace.{" "}
-          <button
-            type="button"
-            className="underline-offset-4 hover:text-foreground hover:underline disabled:opacity-60"
-            disabled={busy}
-            onClick={() => signIn(demo.email, DEMO_PASSWORD)}
-          >
-            {demo.label}
-          </button>
-        </p>
+        {demoEnabled && demo && (
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            Demo workspace.{" "}
+            <button
+              type="button"
+              className="underline-offset-4 hover:text-foreground hover:underline disabled:opacity-60"
+              disabled={busy}
+              onClick={() => signIn(demo.email, "crosstown-demo")}
+            >
+              {demo.label}
+            </button>
+          </p>
+        )}
         {footer}
       </div>
     </main>

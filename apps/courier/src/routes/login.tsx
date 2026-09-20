@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { ApiError, api } from "@/lib/api";
 import { getSession, setSession } from "@/lib/session";
 
-const DEMO = { email: "jordan@courier.example", password: "crosstown-demo" };
+const demoEnabled = import.meta.env.DEV && import.meta.env.VITE_DEMO_MODE === "true";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: () => {
@@ -83,12 +83,14 @@ function LoginPage() {
           </form>
         </CardContent>
       </Card>
-      <p className="mt-4 text-center text-xs text-muted-foreground">
-        Demo workspace.{" "}
-        <button type="button" className="underline-offset-4 hover:underline disabled:opacity-60" disabled={busy} onClick={() => signIn(DEMO.email, DEMO.password)}>
-          Sign in as Jordan
-        </button>
-      </p>
+      {demoEnabled && (
+        <p className="mt-4 text-center text-xs text-muted-foreground">
+          Demo workspace.{" "}
+          <button type="button" className="underline-offset-4 hover:underline disabled:opacity-60" disabled={busy} onClick={() => signIn("jordan@courier.example", "crosstown-demo")}>
+            Sign in as Jordan
+          </button>
+        </p>
+      )}
     </main>
   );
 }

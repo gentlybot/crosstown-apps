@@ -1,5 +1,6 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { LoginForm } from "@/components/login-form";
+import { demoEnabled } from "@/lib/demo";
 import { getSession, homeFor } from "@/lib/session";
 
 // The trailing underscore keeps this route out of the /merchant layout, so the
@@ -14,15 +15,15 @@ export const Route = createFileRoute("/merchant_/login")({
       title="Sign in"
       description="Use the email your Crosstown account was set up with."
       audience="merchant"
-      demo={{ label: "Sign in as Maya at Bloom & Stem", email: "maya@bloomandstem.example" }}
-      footer={
+      demo={demoEnabled ? { label: "Sign in as Maya at Bloom & Stem", email: "maya@bloomandstem.example" } : undefined}
+      footer={demoEnabled && (
         <p className="mt-6 text-center text-xs text-muted-foreground">
           Crosstown staff?{" "}
           <Link to="/admin/login" className="underline-offset-4 hover:text-foreground hover:underline">
             Sign in to ops
           </Link>
         </p>
-      }
+      )}
     />
   ),
 });

@@ -1,5 +1,6 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { LoginForm } from "@/components/login-form";
+import { demoEnabled } from "@/lib/demo";
 import { getSession, homeFor } from "@/lib/session";
 
 // The trailing underscore keeps this route out of the /admin layout, so the
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/admin_/login")({
       title="Staff sign in"
       description="For the Crosstown operations team."
       audience="staff"
-      demo={{ label: "Sign in as Priya in Crosstown ops", email: "ops@crosstown.delivery" }}
+      demo={demoEnabled ? { label: "Sign in as Priya in Crosstown ops", email: "ops@crosstown.delivery" } : undefined}
       footer={
         <p className="mt-6 text-center text-xs text-muted-foreground">
           Running a shop?{" "}

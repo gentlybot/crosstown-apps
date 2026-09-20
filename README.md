@@ -13,8 +13,8 @@ local shops in Toronto. This is a pnpm workspace:
 
 The API lives in the `crosstown-api` repo. Merchants sign in at `/merchant/login`
 (`maya@bloomandstem.example`), Crosstown staff at `/admin/login`
-(`ops@crosstown.delivery`), password `crosstown-demo`. Each sign-in page has a
-one-click demo link.
+(`ops@crosstown.delivery`), password `crosstown-demo`. These accounts require the
+API's demo seed data.
 
 ## Develop
 
@@ -24,6 +24,16 @@ pnpm dev            # portal on :5200 and courier app on :5300, both talking to 
 pnpm dev:portal     # just one of them
 pnpm dev:courier
 ```
+
+Demo sign-in shortcuts are off by default. To enable them during development:
+
+```sh
+VITE_DEMO_MODE=true pnpm dev
+```
+
+Production builds omit the demo shortcuts, bundled demo credentials, and the
+merchant page's staff-login prompt, even when `VITE_DEMO_MODE=true`.
+Staff can still sign in directly at `/admin/login`.
 
 Set `VITE_API_URL` to point either app at a different API origin. In a Gently
 sandbox the API is served on the same origin under `/api`, so the variable is
